@@ -1,0 +1,8 @@
+{
+    "*.{ts,tsx}": [
+        "tsc --noEmit --skipLibCheck --allowSyntheticDefaultImports",
+        "eslint --fix",
+        "prettier --write"
+    ],
+    "*.md": "prettier --list-different"
+}

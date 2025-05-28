@@ -1,0 +1,95 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`should tokenize as expected 1`] = `
+[
+  LineBreakNode {
+    "count": 1,
+    "range": Range {
+      "endColumn": 1,
+      "endRow": 2,
+      "startColumn": 1,
+      "startRow": 1,
+    },
+    "text": "
+",
+    "type": "LINEBREAK",
+  },
+  SpaceNode {
+    "range": Range {
+      "endColumn": 5,
+      "endRow": 2,
+      "startColumn": 1,
+      "startRow": 2,
+    },
+    "size": 4,
+    "text": "    ",
+    "type": "SPACE",
+  },
+  IdentityNode {
+    "range": Range {
+      "endColumn": 9,
+      "endRow": 2,
+      "startColumn": 5,
+      "startRow": 2,
+    },
+    "text": "name",
+    "type": "IDENTITY",
+  },
+  LineBreakNode {
+    "count": 1,
+    "range": Range {
+      "endColumn": 1,
+      "endRow": 3,
+      "startColumn": 9,
+      "startRow": 2,
+    },
+    "text": "
+",
+    "type": "LINEBREAK",
+  },
+  SpaceNode {
+    "range": Range {
+      "endColumn": 7,
+      "endRow": 3,
+      "startColumn": 1,
+      "startRow": 3,
+    },
+    "size": 6,
+    "text": "      ",
+    "type": "SPACE",
+  },
+  IdentityNode {
+    "range": Range {
+      "endColumn": 11,
+      "endRow": 3,
+      "startColumn": 7,
+      "startRow": 3,
+    },
+    "text": "test",
+    "type": "IDENTITY",
+  },
+  LineBreakNode {
+    "count": 1,
+    "range": Range {
+      "endColumn": 1,
+      "endRow": 4,
+      "startColumn": 11,
+      "startRow": 3,
+    },
+    "text": "
+",
+    "type": "LINEBREAK",
+  },
+  SpaceNode {
+    "range": Range {
+      "endColumn": 5,
+      "endRow": 4,
+      "startColumn": 1,
+      "startRow": 4,
+    },
+    "size": 4,
+    "text": "    ",
+    "type": "SPACE",
+  },
+]
+`;
