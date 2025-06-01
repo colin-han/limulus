@@ -1,5 +1,10 @@
 /** @type {import('jest').Config} */
 const config = {
+  preset: 'ts-jest',
+  testEnvironment: 'node',
+  testMatch: [
+    "**/?(*.)+(spec|test).[tj]s?(x)"
+  ],
   collectCoverageFrom: [
     "src/**/*.{js,ts,tsx}",
     "!src/**/*.d.ts"
