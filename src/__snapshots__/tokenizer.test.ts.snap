@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`should tokenize as expected 1`] = `
+exports[`Basic tokenizer should tokenize as expected 1`] = `
 [
   LineBreakNode {
     "count": 1,

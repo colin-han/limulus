@@ -22,6 +22,6 @@ export class Position {
   ) {}
 
   toString() {
-    return `(${this.row}:${this.column})`;
+    return `${this.row}:${this.column}`;
   }
 }

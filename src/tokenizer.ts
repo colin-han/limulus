@@ -21,21 +21,21 @@ import { Range } from './range';
 
 const tokenRegexes = [
   { type: 'COMMENT', regex: '\\/\\/[^\\n]*' },
-  {
-    type: 'DATE',
-    regex: '(?<d_year>\\d{4})-(?<d_month>\\d{1,2})-(?<d_day>\\d{1,2})',
-  },
+  // DATETIME must be placed before DATE and SPACE
   {
     type: 'DATETIME',
     regex:
-      '(?<year>\\d{4})-(?<month>\\d{1,2})-(?<day>\\d{1,2}) (?<hour>\\d{1,2}):(?<minute>\\d{1,2})(?::(?<second>\\d{1,2}))?',
+      '(?<y>\\d{4})-(?<mon>\\d{1,2})-(?<d>\\d{1,2}) (?<h>\\d{1,2}):(?<m>\\d{1,2})(?::(?<s>\\d{1,2})(?:\\.(?<ms>\\d{1,3}))?)?',
+  },
+  {
+    type: 'DATE',
+    regex: '(?<d_y>\\d{4})-(?<d_m>\\d{1,2})-(?<d_d>\\d{1,2})',
   },
   { type: 'IDENTITY', regex: '[A-Za-z_][\\w]*' },
   {
     type: 'STRING',
     regex: '(?<quote>[\'`"])(?:(?:\\\\.)|[^\\\\])*?\\k<quote>',
   },
-  // FLOAT must be placed before INTEGER
   {
     type: 'FLOAT',
     regex: '[+-]?(?:\\d[\\d_]*\\.\\d[\\d_]*|\\d[\\d_]*\\.|\\.\\d[\\d_]*|\\d[\\d_]*)(?:[eE][+-]?\\d[\\d_]*)?',
@@ -112,11 +112,6 @@ class TokeniseContext {
   getCodeOf(next: RegExpExecArray) {
     return next[0];
   }
-
-  newLine(lineCount: number) {
-    this.row += lineCount;
-    this.rowStartPos += lineCount;
-  }
 }
 
 export function* tokenise(code: string): Generator<Token> {
@@ -125,12 +120,11 @@ export function* tokenise(code: string): Generator<Token> {
 
   let next: RegExpExecArray | null;
   while ((next = context.getNextToken()) != null) {
-    const current = next[0];
-
+    const current = context.getCodeOf(next);
     const currentLen = current.length;
 
     if (next.index != context.lastPos) {
-      if (!next.groups?.SPACE && !next.groups?.NEWLINE) {
+      if (!next.groups!.SPACE && !next.groups!.NEWLINE) {
         yield new ErrorNode(
           context.getRangeTo(next.index + currentLen),
           context.getCodeTo(next.index + currentLen),
@@ -142,33 +136,33 @@ export function* tokenise(code: string): Generator<Token> {
       yield new ErrorNode(context.getRangeTo(next.index), context.getCodeTo(next.index), 'Unexpected token');
     }
 
-    if (next.groups?.SPACE) {
+    if (next.groups!.SPACE) {
       yield new SpaceNode(context.getRangeOf(next), current, currentLen);
-    } else if (next.groups?.STRING) {
+    } else if (next.groups!.STRING) {
       yield new StringNode(context.getRangeOf(next, true), current, current[0] as QuotationMarker);
-    } else if (next.groups?.FLOAT) {
+    } else if (next.groups!.FLOAT) {
       if (current.includes('.') || current.includes('e')) {
         yield new FloatNode(context.getRangeOf(next), current, parseFloat(current.replace(/_/g, '')));
       } else {
         yield new IntegerNode(context.getRangeOf(next), current, parseInt(current.replace(/_/g, '')));
       }
-    } else if (next.groups?.COMMENT) {
+    } else if (next.groups!.COMMENT) {
       yield new CommentNode(context.getRangeOf(next), current);
-    } else if (next.groups?.NEWLINE) {
+    } else if (next.groups!.NEWLINE) {
       yield new LineBreakNode(context.getRangeOf(next, true), current, currentLen);
-    } else if (next.groups?.SYMBOL) {
+    } else if (next.groups!.SYMBOL) {
       yield new SymbolNode(context.getRangeOf(next), current);
-    } else if (next.groups?.PARENTHESIS_OPEN) {
+    } else if (next.groups!.PARENTHESIS_OPEN) {
       yield new ParenthesisOpenNode(context.getRangeOf(next), current);
-    } else if (next.groups?.PARENTHESIS_CLOSE) {
+    } else if (next.groups!.PARENTHESIS_CLOSE) {
       yield new ParenthesisCloseNode(context.getRangeOf(next), current);
-    } else if (next.groups?.COMMA) {
+    } else if (next.groups!.COMMA) {
       yield new CommaNode(context.getRangeOf(next));
-    } else if (next.groups?.ARROW) {
+    } else if (next.groups!.ARROW) {
       yield new ArrowNode(context.getRangeOf(next));
-    } else if (next.groups?.DATE) {
+    } else if (next.groups!.DATE) {
       yield new DateNode(context.getRangeOf(next), current, new Date(current));
-    } else if (next.groups?.DATETIME) {
+    } else if (next.groups!.DATETIME) {
       yield new DateTimeNode(context.getRangeOf(next), current, new Date(current));
     } else {
       yield new IdentityNode(context.getRangeOf(next), current);
