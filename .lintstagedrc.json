@@ -1,8 +1,8 @@
 {
-    "*.{ts,tsx}": [
-        "tsc --noEmit --skipLibCheck --allowSyntheticDefaultImports --target es2016",
-        "eslint --fix",
-        "prettier --write"
-    ],
-    "*.md": "prettier --list-different"
+  "*.{ts,tsx}": [
+    "tsc --noEmit --skipLibCheck --allowSyntheticDefaultImports --target es2016",
+    "eslint --fix",
+    "prettier --write"
+  ],
+  "*.md": "prettier --list-different"
 }
