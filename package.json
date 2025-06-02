@@ -1,6 +1,6 @@
 {
   "name": "limulus",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Typescript实现的语法解析基础组件，实现基于行缩进的语法解析能力。",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -19,7 +19,6 @@
   },
   "dependencies": {
     "lodash": "^4.17.21",
-    "ts-toolbelt": "^9.6.0",
     "utility-types": "^3.11.0"
   },
   "devDependencies": {
