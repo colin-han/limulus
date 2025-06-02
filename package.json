@@ -2,7 +2,8 @@
   "name": "limulus",
   "version": "1.0.0",
   "description": "Typescript实现的语法解析基础组件，实现基于行缩进的语法解析能力。",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "repository": "git@github.com:colin-han/limulus.git",
   "author": "Colin <biz@colinhan.info>",
   "license": "MIT",
@@ -13,7 +14,8 @@
     "lint:eslint": "eslint",
     "lint:fix": "eslint --fix",
     "prettier": "prettier --write .",
-    "prepare": "husky"
+    "prepare": "husky",
+    "build": "tsc"
   },
   "dependencies": {
     "lodash": "^4.17.21",
