@@ -4,7 +4,6 @@ import {
   CommentNode,
   DateNode,
   DateTimeNode,
-  ErrorNode,
   FloatNode,
   IdentityNode,
   IntegerNode,
@@ -15,12 +14,13 @@ import {
   SpaceNode,
   StringNode,
   SymbolNode,
-  Token,
 } from './tokens';
+import { ErrorNode } from './nodes';
+import { Node } from './nodes';
 import { Range } from './range';
 
 const tokenRegexes = [
-  { type: 'COMMENT', regex: '\\/\\/[^\\n]*' },
+  { type: 'COMMENT', regex: '[ \t]*\\/\\/[^\\n]*' },
   // DATETIME must be placed before DATE and SPACE
   {
     type: 'DATETIME',
@@ -114,7 +114,7 @@ class TokeniseContext {
   }
 }
 
-export function* tokenise(code: string): Generator<Token> {
+export function* tokenise(code: string): Generator<Node> {
   const reg = new RegExp(regStr, 'mg');
   const context = new TokeniseContext(code, reg);
 

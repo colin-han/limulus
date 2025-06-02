@@ -1,79 +1,39 @@
+import { BaseNode } from './nodes';
 import { Range } from './range';
-
-export type TokenType =
-  | 'COMMENT'
-  | 'SPACE'
-  | 'PARENTHESIS_OPEN'
-  | 'PARENTHESIS_CLOSE'
-  | 'COMMA'
-  | 'SYMBOL'
-  | 'LINEBREAK'
-  | 'IDENTITY'
-  | 'STRING'
-  | 'INTEGER'
-  | 'FLOAT'
-  | 'DATE'
-  | 'DATETIME'
-  | 'ARROW'
-  | 'ERROR';
 
 export type QuotationMarker = '"' | "'" | '`' | '"""';
 
-export interface Token<TType extends TokenType = TokenType> {
-  readonly type: TType;
-  readonly range: Range;
-  readonly text: string;
-}
-
-export abstract class BaseToken<TType extends TokenType = TokenType> implements Token<TType> {
-  constructor(
-    public readonly type: TType,
-    public readonly range: Range,
-    public readonly text: string
-  ) {}
-}
-
-export class ErrorNode extends BaseToken<'ERROR'> {
-  constructor(
-    range: Range,
-    text: string,
-    public readonly reason: string
-  ) {
-    super('ERROR', range, text);
-  }
-}
-
-export class CommentNode extends BaseToken<'COMMENT'> {
+export class CommentNode extends BaseNode<'COMMENT'> {
   constructor(range: Range, text: string) {
     super('COMMENT', range, text);
   }
 }
 
-export class ParenthesisOpenNode extends BaseToken<'PARENTHESIS_OPEN'> {
+export class ParenthesisOpenNode extends BaseNode<'PARENTHESIS_OPEN'> {
   constructor(range: Range, text: string) {
     super('PARENTHESIS_OPEN', range, text);
   }
 }
 
-export class ParenthesisCloseNode extends BaseToken<'PARENTHESIS_CLOSE'> {
+export class ParenthesisCloseNode extends BaseNode<'PARENTHESIS_CLOSE'> {
   constructor(range: Range, text: string) {
     super('PARENTHESIS_CLOSE', range, text);
   }
 }
 
-export class CommaNode extends BaseToken<'COMMA'> {
+export class CommaNode extends BaseNode<'COMMA'> {
   constructor(range: Range) {
     super('COMMA', range, ',');
   }
 }
 
-export class SymbolNode extends BaseToken<'SYMBOL'> {
+export class SymbolNode extends BaseNode<'SYMBOL'> {
   constructor(range: Range, text: string) {
     super('SYMBOL', range, text);
   }
 }
 
-export class LineBreakNode extends BaseToken<'LINEBREAK'> {
+export class LineBreakNode extends BaseNode<'LINEBREAK'> {
   constructor(
     range: Range,
     text: string,
@@ -83,7 +43,7 @@ export class LineBreakNode extends BaseToken<'LINEBREAK'> {
   }
 }
 
-export class SpaceNode extends BaseToken<'SPACE'> {
+export class SpaceNode extends BaseNode<'SPACE'> {
   constructor(
     range: Range,
     text: string,
@@ -93,13 +53,13 @@ export class SpaceNode extends BaseToken<'SPACE'> {
   }
 }
 
-export class IdentityNode extends BaseToken<'IDENTITY'> {
+export class IdentityNode extends BaseNode<'IDENTITY'> {
   constructor(range: Range, text: string) {
     super('IDENTITY', range, text);
   }
 }
 
-export class StringNode extends BaseToken<'STRING'> {
+export class StringNode extends BaseNode<'STRING'> {
   constructor(
     range: Range,
     text: string,
@@ -109,7 +69,7 @@ export class StringNode extends BaseToken<'STRING'> {
   }
 }
 
-export abstract class NumberNode<TType extends 'INTEGER' | 'FLOAT'> extends BaseToken<TType> {
+export abstract class NumberNode<TType extends 'INTEGER' | 'FLOAT'> extends BaseNode<TType> {
   constructor(
     type: TType,
     range: Range,
@@ -131,7 +91,7 @@ export class FloatNode extends NumberNode<'FLOAT'> {
   }
 }
 
-export class DateNode extends BaseToken<'DATE'> {
+export class DateNode extends BaseNode<'DATE'> {
   constructor(
     range: Range,
     text: string,
@@ -141,7 +101,7 @@ export class DateNode extends BaseToken<'DATE'> {
   }
 }
 
-export class DateTimeNode extends BaseToken<'DATETIME'> {
+export class DateTimeNode extends BaseNode<'DATETIME'> {
   constructor(
     range: Range,
     text: string,
@@ -151,7 +111,7 @@ export class DateTimeNode extends BaseToken<'DATETIME'> {
   }
 }
 
-export class ArrowNode extends BaseToken<'ARROW'> {
+export class ArrowNode extends BaseNode<'ARROW'> {
   constructor(range: Range) {
     super('ARROW', range, '->');
   }

@@ -231,12 +231,35 @@ describe('Comments', () => {
     expect(tokens[1]).toMatchObject({ type: 'IDENTITY', text: 'propName' });
     expect(tokens[2]).toMatchObject({ type: 'SPACE' });
     expect(tokens[3]).toMatchObject({ type: 'PARENTHESIS_OPEN' });
-    expect(tokens[4]).toMatchObject({ type: 'SPACE' });
-    expect(tokens[5]).toMatchObject({ type: 'COMMENT', text: '// }abc(' });
-    expect(tokens[6]).toMatchObject({ type: 'LINEBREAK' });
-    expect(tokens[7]).toMatchObject({ type: 'SPACE' });
-    expect(tokens[8]).toMatchObject({ type: 'IDENTITY', text: 'value' });
-    expect(tokens[9]).toMatchObject({ type: 'PARENTHESIS_CLOSE' });
+    expect(tokens[4]).toMatchObject({ type: 'COMMENT', text: ' // }abc(' });
+    expect(tokens[5]).toMatchObject({ type: 'LINEBREAK' });
+    expect(tokens[6]).toMatchObject({ type: 'SPACE' });
+    expect(tokens[7]).toMatchObject({ type: 'IDENTITY', text: 'value' });
+    expect(tokens[8]).toMatchObject({ type: 'PARENTHESIS_CLOSE' });
+  });
+
+  test('should parse the trailing space of comment as a part of the comment', () => {
+    const doc = `// test `;
+
+    const tokens = [...tokenise(doc)];
+    expect(tokens).toHaveLength(1);
+    expect(tokens[0]).toMatchObject({ type: 'COMMENT', text: '// test ' });
+  });
+
+  test('should parse the leading space of comment as a part of the comment', () => {
+    const doc = ` // test`;
+
+    const tokens = [...tokenise(doc)];
+    expect(tokens).toHaveLength(1);
+    expect(tokens[0]).toMatchObject({ type: 'COMMENT', text: ' // test' });
+  });
+
+  test('should parse the leading space of comment as a part of the comment 2', () => {
+    const doc = `name // test `;
+
+    const tokens = [...tokenise(doc)];
+    expect(tokens).toHaveLength(2);
+    expect(tokens[1]).toMatchObject({ type: 'COMMENT', text: ' // test ' });
   });
 });
 
