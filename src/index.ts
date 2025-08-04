@@ -1,5 +1,5 @@
 export * from './range';
-export * from './nodes';
+export * from './node';
 export * from './tokens';
 export * from './statements';
 export * from './tokenizer';

@@ -1,4 +1,4 @@
-import { BaseNode } from './nodes';
+import { BaseNode } from './node';
 import { Range } from './range';
 
 export type QuotationMarker = '"' | "'" | '`' | '"""';

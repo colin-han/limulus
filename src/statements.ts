@@ -1,4 +1,4 @@
-import { Node, BaseNode } from './nodes';
+import { Node, BaseNode } from './node';
 import { Range } from './range';
 
 export class StatementNode extends BaseNode<'STATEMENT'> {

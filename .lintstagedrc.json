@@ -4,5 +4,5 @@
     "eslint --fix",
     "prettier --write"
   ],
-  "*.md": "prettier --list-different"
+  "*.md": "prettier --write"
 }

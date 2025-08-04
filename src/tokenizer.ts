@@ -15,8 +15,8 @@ import {
   StringNode,
   SymbolNode,
 } from './tokens';
-import { ErrorNode } from './nodes';
-import { Node } from './nodes';
+import { ErrorNode } from './node';
+import { Node } from './node';
 import { Range } from './range';
 
 const tokenRegexes = [

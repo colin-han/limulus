@@ -1,4 +1,4 @@
-import { ErrorNode, Node, NodeType } from './nodes';
+import { ErrorNode, Node, NodeType } from './node';
 import { Range } from './range';
 import { GroupNode, StatementNode } from './statements';
 
