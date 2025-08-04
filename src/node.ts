@@ -30,7 +30,7 @@ export interface Node<TType extends NodeType = NodeType> {
   toString(): string;
 }
 
-export abstract class BaseNode<TType extends NodeType = NodeType> implements Node<TType> {
+export class GeneralNode<TType extends NodeType = NodeType> implements Node<TType> {
   constructor(
     public readonly type: TType,
     public range: Range,
@@ -42,7 +42,7 @@ export abstract class BaseNode<TType extends NodeType = NodeType> implements Nod
   }
 }
 
-export class ErrorNode extends BaseNode<'ERROR'> {
+export class ErrorNode extends GeneralNode<'ERROR'> {
   constructor(
     range: Range,
     text: string,

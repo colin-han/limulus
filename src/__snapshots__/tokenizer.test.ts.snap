@@ -25,7 +25,7 @@ exports[`Basic tokenizer should tokenize as expected 1`] = `
     "text": "    ",
     "type": "SPACE",
   },
-  IdentityNode {
+  GeneralNode {
     "range": Range {
       "endColumn": 9,
       "endRow": 2,
@@ -58,7 +58,7 @@ exports[`Basic tokenizer should tokenize as expected 1`] = `
     "text": "      ",
     "type": "SPACE",
   },
-  IdentityNode {
+  GeneralNode {
     "range": Range {
       "endColumn": 11,
       "endRow": 3,

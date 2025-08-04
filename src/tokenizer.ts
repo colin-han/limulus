@@ -1,21 +1,14 @@
 import {
-  ArrowNode,
-  CommaNode,
-  CommentNode,
   DateNode,
   DateTimeNode,
   FloatNode,
-  IdentityNode,
   IntegerNode,
   LineBreakNode,
-  ParenthesisCloseNode,
-  ParenthesisOpenNode,
   QuotationMarker,
   SpaceNode,
   StringNode,
-  SymbolNode,
 } from './tokens';
-import { ErrorNode } from './node';
+import { ErrorNode, GeneralNode } from './node';
 import { Node } from './node';
 import { Range } from './range';
 
@@ -147,25 +140,25 @@ export function* tokenise(code: string): Generator<Node> {
         yield new IntegerNode(context.getRangeOf(next), current, parseInt(current.replace(/_/g, '')));
       }
     } else if (next.groups!.COMMENT) {
-      yield new CommentNode(context.getRangeOf(next), current);
+      yield new GeneralNode('COMMENT', context.getRangeOf(next), current);
     } else if (next.groups!.NEWLINE) {
       yield new LineBreakNode(context.getRangeOf(next, true), current, currentLen);
     } else if (next.groups!.SYMBOL) {
-      yield new SymbolNode(context.getRangeOf(next), current);
+      yield new GeneralNode('SYMBOL', context.getRangeOf(next), current);
     } else if (next.groups!.PARENTHESIS_OPEN) {
-      yield new ParenthesisOpenNode(context.getRangeOf(next), current);
+      yield new GeneralNode('PARENTHESIS_OPEN', context.getRangeOf(next), current);
     } else if (next.groups!.PARENTHESIS_CLOSE) {
-      yield new ParenthesisCloseNode(context.getRangeOf(next), current);
+      yield new GeneralNode('PARENTHESIS_CLOSE', context.getRangeOf(next), current);
     } else if (next.groups!.COMMA) {
-      yield new CommaNode(context.getRangeOf(next));
+      yield new GeneralNode('COMMA', context.getRangeOf(next), ',');
     } else if (next.groups!.ARROW) {
-      yield new ArrowNode(context.getRangeOf(next));
+      yield new GeneralNode('ARROW', context.getRangeOf(next), '->');
     } else if (next.groups!.DATE) {
       yield new DateNode(context.getRangeOf(next), current, new Date(current));
     } else if (next.groups!.DATETIME) {
       yield new DateTimeNode(context.getRangeOf(next), current, new Date(current));
     } else {
-      yield new IdentityNode(context.getRangeOf(next), current);
+      yield new GeneralNode('IDENTITY', context.getRangeOf(next), current);
     }
   }
 }

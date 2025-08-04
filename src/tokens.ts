@@ -1,39 +1,9 @@
-import { BaseNode } from './node';
+import { GeneralNode } from './node';
 import { Range } from './range';
 
 export type QuotationMarker = '"' | "'" | '`' | '"""';
 
-export class CommentNode extends BaseNode<'COMMENT'> {
-  constructor(range: Range, text: string) {
-    super('COMMENT', range, text);
-  }
-}
-
-export class ParenthesisOpenNode extends BaseNode<'PARENTHESIS_OPEN'> {
-  constructor(range: Range, text: string) {
-    super('PARENTHESIS_OPEN', range, text);
-  }
-}
-
-export class ParenthesisCloseNode extends BaseNode<'PARENTHESIS_CLOSE'> {
-  constructor(range: Range, text: string) {
-    super('PARENTHESIS_CLOSE', range, text);
-  }
-}
-
-export class CommaNode extends BaseNode<'COMMA'> {
-  constructor(range: Range) {
-    super('COMMA', range, ',');
-  }
-}
-
-export class SymbolNode extends BaseNode<'SYMBOL'> {
-  constructor(range: Range, text: string) {
-    super('SYMBOL', range, text);
-  }
-}
-
-export class LineBreakNode extends BaseNode<'LINEBREAK'> {
+export class LineBreakNode extends GeneralNode<'LINEBREAK'> {
   constructor(
     range: Range,
     text: string,
@@ -43,7 +13,7 @@ export class LineBreakNode extends BaseNode<'LINEBREAK'> {
   }
 }
 
-export class SpaceNode extends BaseNode<'SPACE'> {
+export class SpaceNode extends GeneralNode<'SPACE'> {
   constructor(
     range: Range,
     text: string,
@@ -53,13 +23,7 @@ export class SpaceNode extends BaseNode<'SPACE'> {
   }
 }
 
-export class IdentityNode extends BaseNode<'IDENTITY'> {
-  constructor(range: Range, text: string) {
-    super('IDENTITY', range, text);
-  }
-}
-
-export class StringNode extends BaseNode<'STRING'> {
+export class StringNode extends GeneralNode<'STRING'> {
   constructor(
     range: Range,
     text: string,
@@ -69,7 +33,7 @@ export class StringNode extends BaseNode<'STRING'> {
   }
 }
 
-export abstract class NumberNode<TType extends 'INTEGER' | 'FLOAT'> extends BaseNode<TType> {
+export abstract class NumberNode<TType extends 'INTEGER' | 'FLOAT'> extends GeneralNode<TType> {
   constructor(
     type: TType,
     range: Range,
@@ -91,7 +55,7 @@ export class FloatNode extends NumberNode<'FLOAT'> {
   }
 }
 
-export class DateNode extends BaseNode<'DATE'> {
+export class DateNode extends GeneralNode<'DATE'> {
   constructor(
     range: Range,
     text: string,
@@ -101,18 +65,12 @@ export class DateNode extends BaseNode<'DATE'> {
   }
 }
 
-export class DateTimeNode extends BaseNode<'DATETIME'> {
+export class DateTimeNode extends GeneralNode<'DATETIME'> {
   constructor(
     range: Range,
     text: string,
     public readonly value: Date
   ) {
     super('DATETIME', range, text);
-  }
-}
-
-export class ArrowNode extends BaseNode<'ARROW'> {
-  constructor(range: Range) {
-    super('ARROW', range, '->');
   }
 }

@@ -1,7 +1,7 @@
-import { Node, BaseNode } from './node';
+import { Node, GeneralNode } from './node';
 import { Range } from './range';
 
-export class StatementNode extends BaseNode<'STATEMENT'> {
+export class StatementNode extends GeneralNode<'STATEMENT'> {
   constructor(
     range: Range,
     text: string,
@@ -15,7 +15,7 @@ export class StatementNode extends BaseNode<'STATEMENT'> {
   nodes: Node[] = [];
 }
 
-export class GroupNode extends BaseNode<'GROUP'> {
+export class GroupNode extends GeneralNode<'GROUP'> {
   constructor(range: Range, text: string) {
     super('GROUP', range, text);
   }
