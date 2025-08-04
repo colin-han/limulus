@@ -276,6 +276,61 @@ describe('Error case', () => {
   });
 });
 
+describe('Space and LineBreak properties', () => {
+  test('should correctly calculate space size', () => {
+    const doc = '   test    more';
+
+    const tokens = [...tokenise(doc)];
+    expect(tokens[0]).toMatchObject({
+      type: 'SPACE',
+      text: '   ',
+      size: 3,
+    });
+    expect(tokens[2]).toMatchObject({
+      type: 'SPACE',
+      text: '    ',
+      size: 4,
+    });
+  });
+
+  test('should correctly calculate linebreak count', () => {
+    const doc = 'line1\nline2\n\n\nline3';
+
+    const tokens = [...tokenise(doc)];
+    expect(tokens[1]).toMatchObject({
+      type: 'LINEBREAK',
+      text: '\n',
+      count: 1,
+    });
+    expect(tokens[3]).toMatchObject({
+      type: 'LINEBREAK',
+      text: '\n\n\n',
+      count: 3,
+    });
+  });
+
+  test('should handle mixed whitespace correctly', () => {
+    const doc = '  \t  test\n\n  ';
+
+    const tokens = [...tokenise(doc)];
+    expect(tokens[0]).toMatchObject({
+      type: 'SPACE',
+      text: '  \t  ',
+      size: 5,
+    });
+    expect(tokens[2]).toMatchObject({
+      type: 'LINEBREAK',
+      text: '\n\n',
+      count: 2,
+    });
+    expect(tokens[3]).toMatchObject({
+      type: 'SPACE',
+      text: '  ',
+      size: 2,
+    });
+  });
+});
+
 describe('Complex tokenizer', () => {
   test('should parse directive correctly', () => {
     const doc = `@unknown(param1, param2)`;

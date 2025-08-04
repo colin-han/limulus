@@ -1,6 +1,7 @@
-import { ErrorNode, Node, NodeType } from './node';
+import { Node, NodeType } from './node';
 import { Range } from './range';
-import { GroupNode, StatementNode } from './statements';
+import { StatementNode, GroupNode } from './statements';
+import { nodes } from './nodes';
 
 type State = 'NEWLINE' | 'STATEMENT' | 'GROUP';
 interface ComplexElement {
@@ -10,11 +11,11 @@ interface ComplexElement {
 }
 
 class StatementizerContext {
-  readonly rootStatement = new StatementNode(new Range(1, 1, 1, 1), '', -1);
-  readonly statementStack: StatementNode[] = [this.rootStatement];
+  readonly rootStatement = nodes.STATEMENT(new Range(1, 1, 1, 1), '', -1);
+  readonly statementStack: StatementNode[] = [this.rootStatement as StatementNode];
   readonly groupStack: GroupNode[] = [];
 
-  currentStatement: StatementNode = this.rootStatement;
+  currentStatement: StatementNode = this.rootStatement as StatementNode;
   currentGroup: GroupNode | null = null;
   state: State = 'NEWLINE';
 
@@ -55,7 +56,7 @@ class StatementizerContext {
   private validateAndCompleteGroups() {
     while (this.groupStack.length > 0) {
       this.currentGroup = this.groupStack[this.groupStack.length - 1];
-      this.currentGroup.nodes[0] = new ErrorNode(
+      this.currentGroup.nodes[0] = nodes.ERROR(
         this.currentGroup.nodes[0].range,
         this.currentGroup.nodes[0].text,
         'Missing closing parenthesis'
@@ -65,7 +66,7 @@ class StatementizerContext {
   }
 
   startNewStatement(token: Node, indent: number) {
-    const newStatement = new StatementNode(token.range, '', indent);
+    const newStatement = nodes.STATEMENT(token.range, '', indent) as StatementNode;
     this.currentStatement.children.push(newStatement);
     this.statementStack.push(newStatement);
     this.currentStatement = newStatement;
@@ -77,7 +78,7 @@ class StatementizerContext {
   }
 
   startNewGroup(token: Node) {
-    const newGroup = new GroupNode(token.range, '');
+    const newGroup = nodes.GROUP(token.range, '') as GroupNode;
     if (!this.currentGroup) {
       this.currentStatement.elements.push(newGroup);
     } else {
@@ -164,7 +165,7 @@ export function statementize(tokens: Generator<Node>): Node[] {
             break;
           case 'PARENTHESIS_CLOSE':
           case 'COMMA':
-            context.addTokenToStatements(new ErrorNode(token.range, token.text, 'Unexpected closing parenthesis'));
+            context.addTokenToStatements(nodes.ERROR(token.range, token.text, 'Unexpected closing parenthesis'));
             break;
           default:
             context.addElementToCurrentStatement(token);

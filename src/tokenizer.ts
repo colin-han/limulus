@@ -1,15 +1,5 @@
-import {
-  DateNode,
-  DateTimeNode,
-  FloatNode,
-  IntegerNode,
-  LineBreakNode,
-  QuotationMarker,
-  SpaceNode,
-  StringNode,
-} from './tokens';
-import { ErrorNode, GeneralNode } from './node';
 import { Node } from './node';
+import { nodes } from './nodes';
 import { Range } from './range';
 
 const tokenRegexes = [
@@ -118,7 +108,7 @@ export function* tokenise(code: string): Generator<Node> {
 
     if (next.index != context.lastPos) {
       if (!next.groups!.SPACE && !next.groups!.NEWLINE) {
-        yield new ErrorNode(
+        yield nodes.ERROR(
           context.getRangeTo(next.index + currentLen),
           context.getCodeTo(next.index + currentLen),
           'Unexpected token'
@@ -126,39 +116,39 @@ export function* tokenise(code: string): Generator<Node> {
         continue;
       }
 
-      yield new ErrorNode(context.getRangeTo(next.index), context.getCodeTo(next.index), 'Unexpected token');
+      yield nodes.ERROR(context.getRangeTo(next.index), context.getCodeTo(next.index), 'Unexpected token');
     }
 
     if (next.groups!.SPACE) {
-      yield new SpaceNode(context.getRangeOf(next), current, currentLen);
+      yield nodes.SPACE(context.getRangeOf(next), current);
     } else if (next.groups!.STRING) {
-      yield new StringNode(context.getRangeOf(next, true), current, current[0] as QuotationMarker);
+      yield nodes.STRING(context.getRangeOf(next, true), current);
     } else if (next.groups!.FLOAT) {
       if (current.includes('.') || current.includes('e')) {
-        yield new FloatNode(context.getRangeOf(next), current, parseFloat(current.replace(/_/g, '')));
+        yield nodes.FLOAT(context.getRangeOf(next), current);
       } else {
-        yield new IntegerNode(context.getRangeOf(next), current, parseInt(current.replace(/_/g, '')));
+        yield nodes.INTEGER(context.getRangeOf(next), current);
       }
     } else if (next.groups!.COMMENT) {
-      yield new GeneralNode('COMMENT', context.getRangeOf(next), current);
+      yield nodes.COMMENT(context.getRangeOf(next), current);
     } else if (next.groups!.NEWLINE) {
-      yield new LineBreakNode(context.getRangeOf(next, true), current, currentLen);
+      yield nodes.LINEBREAK(context.getRangeOf(next, true), current);
     } else if (next.groups!.SYMBOL) {
-      yield new GeneralNode('SYMBOL', context.getRangeOf(next), current);
+      yield nodes.SYMBOL(context.getRangeOf(next), current);
     } else if (next.groups!.PARENTHESIS_OPEN) {
-      yield new GeneralNode('PARENTHESIS_OPEN', context.getRangeOf(next), current);
+      yield nodes.PARENTHESIS_OPEN(context.getRangeOf(next), current);
     } else if (next.groups!.PARENTHESIS_CLOSE) {
-      yield new GeneralNode('PARENTHESIS_CLOSE', context.getRangeOf(next), current);
+      yield nodes.PARENTHESIS_CLOSE(context.getRangeOf(next), current);
     } else if (next.groups!.COMMA) {
-      yield new GeneralNode('COMMA', context.getRangeOf(next), ',');
+      yield nodes.COMMA(context.getRangeOf(next));
     } else if (next.groups!.ARROW) {
-      yield new GeneralNode('ARROW', context.getRangeOf(next), '->');
+      yield nodes.ARROW(context.getRangeOf(next));
     } else if (next.groups!.DATE) {
-      yield new DateNode(context.getRangeOf(next), current, new Date(current));
+      yield nodes.DATE(context.getRangeOf(next), current);
     } else if (next.groups!.DATETIME) {
-      yield new DateTimeNode(context.getRangeOf(next), current, new Date(current));
+      yield nodes.DATETIME(context.getRangeOf(next), current);
     } else {
-      yield new GeneralNode('IDENTITY', context.getRangeOf(next), current);
+      yield nodes.IDENTITY(context.getRangeOf(next), current);
     }
   }
 }
