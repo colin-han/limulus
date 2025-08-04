@@ -11,6 +11,10 @@ export class LineBreakNode extends GeneralNode<'LINEBREAK'> {
   get count(): number {
     return (this.text.match(/\n/g) || []).length;
   }
+
+  override toString(indent: string = ''): string {
+    return `${indent}LINEBREAK[count=${this.count}]@${this.range.toString()}`;
+  }
 }
 
 export class SpaceNode extends GeneralNode<'SPACE'> {
@@ -21,6 +25,10 @@ export class SpaceNode extends GeneralNode<'SPACE'> {
   get size(): number {
     return this.text.length;
   }
+
+  override toString(indent: string = ''): string {
+    return `${indent}SPACE[size=${this.size}]@${this.range.toString()}`;
+  }
 }
 
 export class StringNode extends GeneralNode<'STRING'> {
@@ -30,6 +38,10 @@ export class StringNode extends GeneralNode<'STRING'> {
 
   get quot(): QuotationMarker {
     return this.text[0] as QuotationMarker;
+  }
+
+  override toString(indent: string = ''): string {
+    return `${indent}STRING[${this.text}]@${this.range.toString()}`;
   }
 }
 
@@ -51,10 +63,18 @@ export class IntegerNode extends NumberNode<'INTEGER'> {
   override get value(): number {
     return parseInt(this.text.replace(/_/g, ''), 10);
   }
+
+  override toString(indent: string = ''): string {
+    return `${indent}INTEGER[${this.value}]@${this.range.toString()}`;
+  }
 }
 export class FloatNode extends NumberNode<'FLOAT'> {
   constructor(range: Range, text: string) {
     super('FLOAT', range, text);
+  }
+
+  override toString(indent: string = ''): string {
+    return `${indent}FLOAT[${this.value}]@${this.range.toString()}`;
   }
 }
 
@@ -66,6 +86,10 @@ export class DateNode extends GeneralNode<'DATE'> {
   get value(): Date {
     return new Date(this.text);
   }
+
+  override toString(indent: string = ''): string {
+    return `${indent}DATE[${this.text}]@${this.range.toString()}`;
+  }
 }
 
 export class DateTimeNode extends GeneralNode<'DATETIME'> {
@@ -75,5 +99,9 @@ export class DateTimeNode extends GeneralNode<'DATETIME'> {
 
   get value(): Date {
     return new Date(this.text);
+  }
+
+  override toString(indent: string = ''): string {
+    return `${indent}DATETIME[${this.text}]@${this.range.toString()}`;
   }
 }

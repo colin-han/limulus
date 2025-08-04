@@ -13,6 +13,26 @@ export class StatementNode extends GeneralNode<'STATEMENT'> {
   children: Node[] = [];
   elements: Node[] = [];
   nodes: Node[] = [];
+
+  toString(indent: string = ''): string {
+    let result = `${indent}STATEMENT[indent=${this.indent}]@${this.range.toString()}`;
+
+    if (this.elements.length > 0) {
+      result += `\n${indent}  ELEMENTS:`;
+      for (const element of this.elements) {
+        result += `\n${element.toString(indent + '    ')}`;
+      }
+    }
+
+    if (this.children.length > 0) {
+      result += `\n${indent}  CHILDREN:`;
+      for (const child of this.children) {
+        result += `\n${child.toString(indent + '    ')}`;
+      }
+    }
+
+    return result;
+  }
 }
 
 export class GroupNode extends GeneralNode<'GROUP'> {
@@ -22,4 +42,17 @@ export class GroupNode extends GeneralNode<'GROUP'> {
 
   elements: Node[] = [];
   nodes: Node[] = [];
+
+  toString(indent: string = ''): string {
+    let result = `${indent}GROUP@${this.range.toString()}`;
+
+    if (this.elements.length > 0) {
+      result += `\n${indent}  ELEMENTS:`;
+      for (const element of this.elements) {
+        result += `\n${element.toString(indent + '    ')}`;
+      }
+    }
+
+    return result;
+  }
 }

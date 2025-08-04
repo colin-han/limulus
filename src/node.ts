@@ -27,7 +27,7 @@ export interface Node<TType extends NodeType = NodeType> {
   range: Range;
   text: string;
 
-  toString(): string;
+  toString(indent?: string): string;
 }
 
 export class GeneralNode<TType extends NodeType = NodeType> implements Node<TType> {
@@ -37,8 +37,8 @@ export class GeneralNode<TType extends NodeType = NodeType> implements Node<TTyp
     public text: string
   ) {}
 
-  toString() {
-    return `${this.type}(${this.range.toString()}) ${this.text}`;
+  toString(indent: string = '') {
+    return `${indent}${this.type}[${this.text}]@${this.range.toString()}`;
   }
 }
 
@@ -49,5 +49,9 @@ export class ErrorNode extends GeneralNode<'ERROR'> {
     public readonly reason: string
   ) {
     super('ERROR', range, text);
+  }
+
+  override toString(indent: string = ''): string {
+    return `${indent}ERROR[${this.text}]@${this.range.toString()}:${this.reason}`;
   }
 }
