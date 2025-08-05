@@ -105,3 +105,25 @@ export class DateTimeNode extends GeneralNode<'DATETIME'> {
     return `${indent}DATETIME[${this.text}]@${this.range.toString()}`;
   }
 }
+
+export class PercentageNode extends GeneralNode<'PERCENTAGE'> {
+  constructor(range: Range, text: string) {
+    super('PERCENTAGE', range, text);
+  }
+
+  get value(): number {
+    // Remove % and parse the numeric part, handling underscores
+    const numericPart = this.text.slice(0, -1).replace(/_/g, '');
+    return parseFloat(numericPart || '0') / 100; // Convert to decimal (e.g., 50% -> 0.5)
+  }
+
+  get percentage(): number {
+    // Return the percentage value as-is (e.g., 50% -> 50)
+    const numericPart = this.text.slice(0, -1).replace(/_/g, '');
+    return parseFloat(numericPart || '0');
+  }
+
+  override toString(indent: string = ''): string {
+    return `${indent}PERCENTAGE[${this.text}]@${this.range.toString()}`;
+  }
+}

@@ -1,7 +1,16 @@
 import { Range } from './range';
-import { SpaceNode, LineBreakNode, StringNode, IntegerNode, FloatNode, DateNode, DateTimeNode } from './tokens';
-import { StatementNode, GroupNode } from './statements';
-import { ErrorNode, GeneralNode } from './node';
+import {
+  SpaceNode,
+  LineBreakNode,
+  StringNode,
+  IntegerNode,
+  FloatNode,
+  DateNode,
+  DateTimeNode,
+  PercentageNode,
+} from './tokens';
+import { StatementNode, FunctionNode } from './statements';
+import { ErrorNode, GeneralNode, Node } from './node';
 
 const nodes = {
   COMMENT: (range: Range, text: string): GeneralNode<'COMMENT'> => new GeneralNode('COMMENT', range, text),
@@ -19,9 +28,10 @@ const nodes = {
   FLOAT: (range: Range, text: string): FloatNode => new FloatNode(range, text),
   DATE: (range: Range, text: string): DateNode => new DateNode(range, text),
   DATETIME: (range: Range, text: string): DateTimeNode => new DateTimeNode(range, text),
+  PERCENTAGE: (range: Range, text: string): PercentageNode => new PercentageNode(range, text),
   ARROW: (range: Range): GeneralNode<'ARROW'> => new GeneralNode('ARROW', range, '->'),
   STATEMENT: (range: Range, text: string, indent: number): StatementNode => new StatementNode(range, text, indent),
-  GROUP: (range: Range, text: string): GroupNode => new GroupNode(range, text),
+  FUNCTION: (range: Range, text: string, name: Node): FunctionNode => new FunctionNode(range, text, name),
   ERROR: (range: Range, text: string, reason: string): ErrorNode => new ErrorNode(range, text, reason),
 };
 

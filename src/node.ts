@@ -1,5 +1,10 @@
 import { Range } from './range';
 
+// 前向声明Visitor接口以避免循环依赖
+export interface Visitor<T = unknown> {
+  visit(node: Node): T;
+}
+
 export type NodeType =
   // Tokens
   | 'COMMENT'
@@ -15,10 +20,11 @@ export type NodeType =
   | 'FLOAT'
   | 'DATE'
   | 'DATETIME'
+  | 'PERCENTAGE'
   | 'ARROW'
   // Statements
   | 'STATEMENT'
-  | 'GROUP'
+  | 'FUNCTION'
   // Error
   | 'ERROR';
 
@@ -28,6 +34,7 @@ export interface Node<TType extends NodeType = NodeType> {
   text: string;
 
   toString(indent?: string): string;
+  accept<T>(visitor: Visitor<T>): T;
 }
 
 export class GeneralNode<TType extends NodeType = NodeType> implements Node<TType> {
@@ -39,6 +46,10 @@ export class GeneralNode<TType extends NodeType = NodeType> implements Node<TTyp
 
   toString(indent: string = '') {
     return `${indent}${this.type}[${this.text}]@${this.range.toString()}`;
+  }
+
+  accept<T>(visitor: Visitor<T>): T {
+    return visitor.visit(this);
   }
 }
 

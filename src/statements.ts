@@ -14,7 +14,7 @@ export class StatementNode extends GeneralNode<'STATEMENT'> {
   elements: Node[] = [];
   nodes: Node[] = [];
 
-  toString(indent: string = ''): string {
+  override toString(indent: string = ''): string {
     let result = `${indent}STATEMENT[indent=${this.indent}]@${this.range.toString()}`;
 
     if (this.elements.length > 0) {
@@ -35,21 +35,25 @@ export class StatementNode extends GeneralNode<'STATEMENT'> {
   }
 }
 
-export class GroupNode extends GeneralNode<'GROUP'> {
-  constructor(range: Range, text: string) {
-    super('GROUP', range, text);
+export class FunctionNode extends GeneralNode<'FUNCTION'> {
+  constructor(
+    range: Range,
+    text: string,
+    public readonly name: Node
+  ) {
+    super('FUNCTION', range, text);
   }
 
-  elements: Node[] = [];
+  parameters: Node[] = [];
   nodes: Node[] = [];
 
-  toString(indent: string = ''): string {
-    let result = `${indent}GROUP@${this.range.toString()}`;
+  override toString(indent: string = ''): string {
+    let result = `${indent}FUNCTION[${this.name.text}]@${this.range.toString()}`;
 
-    if (this.elements.length > 0) {
-      result += `\n${indent}  ELEMENTS:`;
-      for (const element of this.elements) {
-        result += `\n${element.toString(indent + '    ')}`;
+    if (this.parameters.length > 0) {
+      result += `\n${indent}  PARAMETERS:`;
+      for (const param of this.parameters) {
+        result += `\n${param.toString(indent + '    ')}`;
       }
     }
 

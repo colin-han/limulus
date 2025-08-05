@@ -122,6 +122,110 @@ describe('Date tokenizer', () => {
   });
 });
 
+describe('Percentage tokenizer', () => {
+  test('should tokenize basic percentages correctly', () => {
+    const doc = `50% 100% 0%`;
+    const tokens = [...tokenise(doc)];
+
+    expect(tokens.map((t) => t.toString())).toEqual([
+      'PERCENTAGE[50%]@(1:1)-(1:4)',
+      'SPACE[size=1]@(1:4)-(1:5)',
+      'PERCENTAGE[100%]@(1:5)-(1:9)',
+      'SPACE[size=1]@(1:9)-(1:10)',
+      'PERCENTAGE[0%]@(1:10)-(1:12)',
+    ]);
+  });
+
+  test('should tokenize decimal percentages correctly', () => {
+    const doc = `12.5% 0.1% 99.99%`;
+    const tokens = [...tokenise(doc)];
+
+    expect(tokens.map((t) => t.toString())).toEqual([
+      'PERCENTAGE[12.5%]@(1:1)-(1:6)',
+      'SPACE[size=1]@(1:6)-(1:7)',
+      'PERCENTAGE[0.1%]@(1:7)-(1:11)',
+      'SPACE[size=1]@(1:11)-(1:12)',
+      'PERCENTAGE[99.99%]@(1:12)-(1:18)',
+    ]);
+  });
+
+  test('should tokenize percentages starting with decimal point', () => {
+    const doc = `.5% .25% .999%`;
+    const tokens = [...tokenise(doc)];
+
+    expect(tokens.map((t) => t.toString())).toEqual([
+      'PERCENTAGE[.5%]@(1:1)-(1:4)',
+      'SPACE[size=1]@(1:4)-(1:5)',
+      'PERCENTAGE[.25%]@(1:5)-(1:9)',
+      'SPACE[size=1]@(1:9)-(1:10)',
+      'PERCENTAGE[.999%]@(1:10)-(1:15)',
+    ]);
+  });
+
+  test('should tokenize edge case percentages', () => {
+    const doc = `% .% 123.% 100.0%`;
+    const tokens = [...tokenise(doc)];
+
+    expect(tokens.map((t) => t.toString())).toEqual([
+      'PERCENTAGE[%]@(1:1)-(1:2)',
+      'SPACE[size=1]@(1:2)-(1:3)',
+      'PERCENTAGE[.%]@(1:3)-(1:5)',
+      'SPACE[size=1]@(1:5)-(1:6)',
+      'PERCENTAGE[123.%]@(1:6)-(1:11)',
+      'SPACE[size=1]@(1:11)-(1:12)',
+      'PERCENTAGE[100.0%]@(1:12)-(1:18)',
+    ]);
+  });
+
+  test('should handle percentages with underscores', () => {
+    const doc = `1_000% 12_34.5_6%`;
+    const tokens = [...tokenise(doc)];
+
+    expect(tokens.map((t) => t.toString())).toEqual([
+      'PERCENTAGE[1_000%]@(1:1)-(1:7)',
+      'SPACE[size=1]@(1:7)-(1:8)',
+      'PERCENTAGE[12_34.5_6%]@(1:8)-(1:18)',
+    ]);
+  });
+
+  test('should differentiate percentage from separate tokens', () => {
+    const doc = `50 % test% func(25%)`;
+    const tokens = [...tokenise(doc)];
+
+    expect(tokens.map((t) => t.toString())).toEqual([
+      'INTEGER[50]@(1:1)-(1:3)',
+      'SPACE[size=1]@(1:3)-(1:4)',
+      'PERCENTAGE[%]@(1:4)-(1:5)',
+      'SPACE[size=1]@(1:5)-(1:6)',
+      'IDENTITY[test]@(1:6)-(1:10)',
+      'PERCENTAGE[%]@(1:10)-(1:11)',
+      'SPACE[size=1]@(1:11)-(1:12)',
+      'IDENTITY[func]@(1:12)-(1:16)',
+      'PARENTHESIS_OPEN[(]@(1:16)-(1:17)',
+      'PERCENTAGE[25%]@(1:17)-(1:20)',
+      'PARENTHESIS_CLOSE[)]@(1:20)-(1:21)',
+    ]);
+  });
+
+  test('should handle percentages in complex expressions', () => {
+    const doc = `rate: 12.5%, discount: 10%`;
+    const tokens = [...tokenise(doc)];
+
+    expect(tokens.map((t) => t.toString())).toEqual([
+      'IDENTITY[rate]@(1:1)-(1:5)',
+      'SYMBOL[:]@(1:5)-(1:6)',
+      'SPACE[size=1]@(1:6)-(1:7)',
+      'PERCENTAGE[12.5%]@(1:7)-(1:12)',
+      'COMMA[,]@(1:12)-(1:13)',
+      'SPACE[size=1]@(1:13)-(1:14)',
+      'IDENTITY[discount]@(1:14)-(1:22)',
+      'SYMBOL[:]@(1:22)-(1:23)',
+      'SPACE[size=1]@(1:23)-(1:24)',
+      'PERCENTAGE[10%]@(1:24)-(1:27)',
+    ]);
+  });
+});
+
 describe('Comments', () => {
   test('should tokenize correctly', () => {
     const doc = `// test`;

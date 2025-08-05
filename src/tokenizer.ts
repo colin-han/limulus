@@ -19,17 +19,22 @@ const tokenRegexes = [
     type: 'STRING',
     regex: '(?<quote>[\'`"])(?:(?:\\\\.)|[^\\\\])*?\\k<quote>',
   },
+  // PERCENTAGE must be placed before FLOAT to match patterns like 12.5%
+  {
+    type: 'PERCENTAGE',
+    regex: '(?:\\d[\\d_]*(?:\\.\\d[\\d_]*)?|\\.\\d[\\d_]*|\\d[\\d_]*\\.|\\.|)%',
+  },
   {
     type: 'FLOAT',
     regex: '[+-]?(?:\\d[\\d_]*\\.\\d[\\d_]*|\\d[\\d_]*\\.|\\.\\d[\\d_]*|\\d[\\d_]*)(?:[eE][+-]?\\d[\\d_]*)?',
   },
   { type: 'NEWLINE', regex: '\\n+' },
   { type: 'SPACE', regex: '[ \\t]+' },
-  { type: 'SYMBOL', regex: '[!@#$%^&~?.\\\\]+' },
+  { type: 'ARROW', regex: '->' },
+  { type: 'SYMBOL', regex: '[!@#$%^&~?.\\\\:+\\-*=<>]+' },
   { type: 'PARENTHESIS_OPEN', regex: '[\\(\\[\\{]' },
   { type: 'PARENTHESIS_CLOSE', regex: '[\\)\\]\\}]' },
   { type: 'COMMA', regex: ',' },
-  { type: 'ARROW', regex: '->' },
 ];
 
 const regStr = tokenRegexes.map((k) => `(?<${k.type}>${k.regex})`).join('|');
@@ -147,6 +152,8 @@ export function* tokenise(code: string): Generator<Node> {
       yield nodes.DATE(context.getRangeOf(next), current);
     } else if (next.groups!.DATETIME) {
       yield nodes.DATETIME(context.getRangeOf(next), current);
+    } else if (next.groups!.PERCENTAGE) {
+      yield nodes.PERCENTAGE(context.getRangeOf(next), current);
     } else {
       yield nodes.IDENTITY(context.getRangeOf(next), current);
     }
